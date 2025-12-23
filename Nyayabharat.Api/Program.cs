@@ -25,7 +25,7 @@ builder.Services
     .AddAuthorizationPolicies();
 
 builder.Services.AddCorsPolicy();
-builder.Services.AddJwtAuthentication(builder.Configuration);
+//builder.Services.AddJwtAuthentication(builder.Configuration);
 
 
 

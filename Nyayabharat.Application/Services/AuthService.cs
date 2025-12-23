@@ -1,37 +1,69 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Nyayabharat.Application.DTOs.Auth;
 using Nyayabharat.Application.Helpers;
+using Nyayabharat.Application.Interfaces.Repositories;
 using Nyayabharat.Application.Interfaces.Services;
+using Nyayabharat.Domain.Entities;
+//using Nyayabharat.Infrastructure.Identity;
 
 namespace Nyayabharat.Application.Services
 {
     public class AuthService : IAuthService
     {
+        private readonly IUserRepository _userRepository;
         private readonly IConfiguration _configuration;
 
-        public AuthService(IConfiguration configuration)
+        public AuthService(
+            IUserRepository userRepository,
+            IConfiguration configuration)
         {
+            _userRepository = userRepository;
             _configuration = configuration;
         }
 
-        public Task<LoginResponseDto> LoginAsync(LoginRequestDto request)
+        // REGISTER
+        public async Task RegisterAsync(RegisterUserDto request)
         {
-            // NOTE: Real user validation will come after UserRepository
-            var token = JwtHelper.GenerateToken(
-                userId: 1,
-                userName: request.UserName,
-                userType: "Citizen",
-                secretKey: _configuration["Jwt:Secret"]!
-            );
+            var existing = await _userRepository.GetByUserNameAsync(request.UserName);
+            if (existing != null)
+                throw new Exception("User already exists");
 
-            var response = new LoginResponseDto
+            var user = new User
             {
                 UserName = request.UserName,
-                UserType = "Citizen",
-                Token = token
+                Email = request.Email,
+                PasswordHash = PasswordHasher.Hash(request.Password),
+                UserType = (Domain.Enums.UserType)request.UserType,
+                CreatedOn = DateTime.UtcNow
             };
 
-            return Task.FromResult(response);
+
+            await _userRepository.AddAsync(user);
+        }
+
+        // LOGIN
+        public async Task<LoginResponseDto> LoginAsync(LoginRequestDto request)
+        {
+            var user = await _userRepository.GetByUserNameAsync(request.UserName);
+            if (user == null)
+                throw new Exception("Invalid credentials");
+
+            if (!PasswordHasher.Verify(request.Password, user.PasswordHash))
+                throw new Exception("Invalid credentials");
+
+            var token = JwtHelper.GenerateToken(
+                user.UserId,
+                user.UserName,
+                user.UserType.ToString(),
+                _configuration["Jwt:Secret"]!
+            );
+
+            return new LoginResponseDto
+            {
+                UserName = user.UserName,
+                UserType = user.UserType.ToString(),
+                Token = token
+            };
         }
     }
 }

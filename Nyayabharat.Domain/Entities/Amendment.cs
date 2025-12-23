@@ -1,7 +1,11 @@
-﻿namespace Nyayabharat.Domain.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Nyayabharat.Domain.Entities
 {
     public class Amendment
     {
+
+        [Key]
         public int AmendmentId { get; set; }
         public int ActId { get; set; }
         public int AmendmentYear { get; set; }

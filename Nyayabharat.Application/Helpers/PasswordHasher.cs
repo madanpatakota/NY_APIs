@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace Nyayabharat.Infrastructure.Identity
+namespace Nyayabharat.Application.Helpers
 {
     public static class PasswordHasher
     {
@@ -18,3 +18,4 @@ namespace Nyayabharat.Infrastructure.Identity
         }
     }
 }
+

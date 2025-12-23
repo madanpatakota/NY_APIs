@@ -1,7 +1,10 @@
-﻿namespace Nyayabharat.Domain.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Nyayabharat.Domain.Entities
 {
     public class Act
     {
+        [Key]
         public int ActId { get; set; }
         public string ActName { get; set; } = string.Empty;
         public string? ActShortName { get; set; }

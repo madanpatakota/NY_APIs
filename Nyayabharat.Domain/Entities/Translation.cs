@@ -1,7 +1,12 @@
-﻿namespace Nyayabharat.Domain.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Nyayabharat.Domain.Entities
 {
     public class Translation
     {
+
+
+        [Key]
         public int TranslationId { get; set; }
 
         public string EntityType { get; set; } = string.Empty;

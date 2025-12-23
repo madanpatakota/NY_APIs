@@ -1,7 +1,11 @@
-﻿namespace Nyayabharat.Domain.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Nyayabharat.Domain.Entities
 {
     public class QuizAttempt
     {
+
+        [Key]
         public int AttemptId { get; set; }
         public int UserId { get; set; }
         public DateTime StartedOn { get; set; }

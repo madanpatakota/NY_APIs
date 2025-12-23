@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Nyayabharat.Application.Interfaces.Services;
 
 namespace Nyayabharat.Api.Controllers
 {
+
+    [AllowAnonymous]
     [ApiController]
     [Route("api/translations")]
     public class TranslationController : ControllerBase

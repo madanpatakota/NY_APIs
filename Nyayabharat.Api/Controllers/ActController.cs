@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Nyayabharat.Application.Interfaces.Services;
 
 namespace Nyayabharat.Api.Controllers
 {
+    [AllowAnonymous]
     [ApiController]
     [Route("api/acts")]
     public class ActController : ControllerBase
@@ -18,6 +20,8 @@ namespace Nyayabharat.Api.Controllers
 
 
         //Endpoint to get all acts http://https://localhost:7156/api/acts
+
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {

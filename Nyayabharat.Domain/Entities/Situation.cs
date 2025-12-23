@@ -1,9 +1,12 @@
 ﻿using Nyayabharat.Domain.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace Nyayabharat.Domain.Entities
 {
     public class Situation
     {
+
+        [Key]
         public int SituationId { get; set; }
         public string Title { get; set; } = string.Empty;
         public string? Description { get; set; }

@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Nyayabharat.Application.Interfaces.Services;
 
 namespace Nyayabharat.Api.Controllers
 {
+    [AllowAnonymous]
     [ApiController]
     [Route("api/quiz")]
     public class QuizController : ControllerBase
@@ -16,15 +18,24 @@ namespace Nyayabharat.Api.Controllers
 
 
 
-
+        [Authorize]
         //Endpoint to start a quiz http://https://localhost:7156/api/quiz/start/{situationId}/{difficulty}
         [HttpGet("start/{situationId}/{difficulty}")]
         public async Task<IActionResult> Start(int situationId, string difficulty)
         {
-            var questions = await _quizService.StartQuizAsync(situationId, difficulty);
+            var userType = User.FindFirst("UserType")!.Value;
+
+            var questions = await _quizService.StartQuizAsync(
+                situationId,
+                difficulty,
+                userType
+            );
+            //var questions = await _quizService.StartQuizAsync(situationId, difficulty);
             return Ok(questions);
         }
 
+
+        [Authorize]
         //Endpoint to submit quiz answers http://https://localhost:7156/api/quiz/submit/{attemptId}
         [HttpPost("submit/{attemptId}")]
         public async Task<IActionResult> Submit(int attemptId, [FromBody] Dictionary<int, int> answers)

@@ -38,6 +38,9 @@ namespace Nyayabharat.Api.Extensions
             services.AddScoped<ITranslationRepository, TranslationRepository>();
             services.AddScoped<ITranslationService, TranslationService>();
 
+            services.AddScoped<IUserRepository, UserRepository>();
+
+
 
             return services;
         }

@@ -46,7 +46,7 @@ namespace Nyayabharat.Infrastructure.Data
         //public DbSet<QuizAttempt> QuizAttempts { get; set; }
         //public DbSet<QuizAttemptQuestion> QuizAttemptQuestions { get; set; }
         //public DbSet<QuizAttemptAnswer> QuizAttemptAnswers { get; set; }
-        public DbSet<UserProgress> UserProgress { get; set; }
+       // public DbSet<UserProgress> UserProgress { get; set; }
 
         //public DbSet<Language> Languages { get; set; }
         //public DbSet<Translation> Translations { get; set; }

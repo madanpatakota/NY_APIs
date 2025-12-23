@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Nyayabharat.Application.DTOs.Auth;
 using Nyayabharat.Application.Interfaces.Services;
 
 namespace Nyayabharat.Api.Controllers
 {
+    [AllowAnonymous]
     [ApiController]
     [Route("api/auth")]
     public class AuthController : ControllerBase
@@ -15,15 +17,20 @@ namespace Nyayabharat.Api.Controllers
             _authService = authService;
         }
 
-
-
-        //Endpoint for user login http://https://localhost:7156/api/auth/login
-
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
+        // Endpoint: POST https://localhost:7156/api/auth/register
+        [HttpPost("register")]
+        public async Task<IActionResult> Register(RegisterUserDto request)
         {
-            var response = await _authService.LoginAsync(request);
-            return Ok(response);
+            await _authService.RegisterAsync(request);
+            return Ok("User registered successfully");
+        }
+
+        // Endpoint: POST https://localhost:7156/api/auth/login
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginRequestDto request)
+        {
+            var result = await _authService.LoginAsync(request);
+            return Ok(result);
         }
     }
 }

@@ -1,7 +1,11 @@
-﻿namespace Nyayabharat.Domain.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Nyayabharat.Domain.Entities
 {
     public class Section
     {
+
+        [Key]
         public int SectionId { get; set; }
         public int ActId { get; set; }
         public int? ChapterId { get; set; }

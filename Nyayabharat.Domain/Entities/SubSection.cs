@@ -1,7 +1,12 @@
-﻿namespace Nyayabharat.Domain.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Nyayabharat.Domain.Entities
 {
     public class SubSection
     {
+
+
+        [Key]
         public int SubSectionId { get; set; }
         public int SectionId { get; set; }
         public string? SubSectionLabel { get; set; }

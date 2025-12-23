@@ -12,7 +12,18 @@ namespace Nyayabharat.Api.Extensions
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            var key = Encoding.UTF8.GetBytes(configuration["Jwt:Secret"]!);
+           // var key = Encoding.UTF8.GetBytes(configuration["Jwt:Secret"]!);
+
+
+            var secret = configuration["Jwt:Secret"];
+
+            if (string.IsNullOrEmpty(secret))
+            {
+                throw new Exception("JWT Secret is missing from configuration");
+            }
+
+            var key = Encoding.UTF8.GetBytes(secret);
+
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>

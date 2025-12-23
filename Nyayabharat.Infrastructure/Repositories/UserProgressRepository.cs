@@ -12,8 +12,9 @@ namespace Nyayabharat.Infrastructure.Repositories
 
         public async Task UpdateProgressAsync(UserProgress progress)
         {
-            _context.UserProgress.Update(progress);
+            _context.UserProgresses.Update(progress);
             await _context.SaveChangesAsync();
         }
+
     }
 }

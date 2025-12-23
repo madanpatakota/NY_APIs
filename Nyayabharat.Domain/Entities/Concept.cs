@@ -1,7 +1,11 @@
-﻿namespace Nyayabharat.Domain.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Nyayabharat.Domain.Entities
 {
     public class Concept
     {
+
+        [Key]
         public int ConceptId { get; set; }
         public string ConceptName { get; set; } = string.Empty;
         public string? SimpleDefinition { get; set; }

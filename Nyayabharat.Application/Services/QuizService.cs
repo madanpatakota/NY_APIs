@@ -2,6 +2,7 @@
 using Nyayabharat.Application.Interfaces.Repositories;
 using Nyayabharat.Application.Interfaces.Services;
 using Nyayabharat.Domain.Entities;
+using Nyayabharat.Domain.Enums;
 
 namespace Nyayabharat.Application.Services
 {
@@ -21,23 +22,50 @@ namespace Nyayabharat.Application.Services
             _progressRepository = progressRepository;
         }
 
-        public async Task<IEnumerable<QuizQuestionDto>> StartQuizAsync(int situationId, string difficulty)
-        {
-            var questions = await _questionRepository.GetQuestionsBySituationIdAsync(situationId);
+        //public async Task<IEnumerable<QuizQuestionDto>> StartQuizAsync(int situationId, string difficulty)
+        //{
+        //    var questions = await _questionRepository.GetQuestionsBySituationIdAsync(situationId);
 
-            return questions
-                .Where(q => q.Difficulty.Equals(difficulty, StringComparison.OrdinalIgnoreCase))
-                .Select(q => new QuizQuestionDto
+        //    return questions
+        //        .Where(q => q.Difficulty.Equals(difficulty, StringComparison.OrdinalIgnoreCase))
+        //        .Select(q => new QuizQuestionDto
+        //        {
+        //            QuestionId = q.QuestionId,
+        //            QuestionText = q.QuestionText,
+        //            Options = q.Options.Select(o => new QuizOptionDto
+        //            {
+        //                OptionId = o.OptionId,
+        //                OptionText = o.OptionText
+        //            }).ToList()
+        //        });
+        //}
+
+
+        public async Task<IEnumerable<QuizQuestionDto>> StartQuizAsync(
+    int situationId,
+    string difficulty,
+    string userType)
+        {
+            var parsedUserType = Enum.Parse<UserType>(userType);
+
+            var questions = await _questionRepository.GetQuizQuestionsAsync(
+                situationId,
+                difficulty,
+                parsedUserType
+            );
+
+            return questions.Select(q => new QuizQuestionDto
+            {
+                QuestionId = q.QuestionId,
+                QuestionText = q.QuestionText,
+                Options = q.Options.Select(o => new QuizOptionDto
                 {
-                    QuestionId = q.QuestionId,
-                    QuestionText = q.QuestionText,
-                    Options = q.Options.Select(o => new QuizOptionDto
-                    {
-                        OptionId = o.OptionId,
-                        OptionText = o.OptionText
-                    }).ToList()
-                });
+                    OptionId = o.OptionId,
+                    OptionText = o.OptionText
+                }).ToList()
+            });
         }
+
 
         public async Task<QuizResultDto> SubmitQuizAsync(int attemptId, Dictionary<int, int> answers)
         {
