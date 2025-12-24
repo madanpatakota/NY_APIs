@@ -4,21 +4,24 @@ using Nyayabharat.Api.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//builder.Services.AddControllers();
+/* -------------------- MVC -------------------- */
+
+bool jwtEnabled;
 
 builder.Services.AddControllers(options =>
 {
+    // Validation can always run
     options.Filters.Add<ValidationFilter>();
-    options.Filters.Add<AuthorizationFilter>();
-    options.Filters.Add<AuditLogFilter>();
+
+    // Auth-related filters ONLY if JWT is enabled
+    if (builder.Configuration.GetSection("Jwt").Exists())
+    {
+        options.Filters.Add<AuthorizationFilter>();
+        options.Filters.Add<AuditLogFilter>();
+    }
 });
 
-//using Nyayabharat.Api.Middlewares;
-
-
-
-
-bool jwtEnabled;
+/* -------------------- SERVICES -------------------- */
 
 builder.Services
     .AddApplicationServices(builder.Configuration)
@@ -31,39 +34,37 @@ if (jwtEnabled)
     builder.Services.AddAuthorizationPolicies();
 }
 
-
-
-
 builder.Services.AddCorsPolicy();
-//builder.Services.AddJwtAuthentication(builder.Configuration);
 
-
+/* -------------------- APP -------------------- */
 
 var app = builder.Build();
 
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UseSwagger();
-//    app.UseSwaggerUI();
-//}
+/* -------------------- SWAGGER -------------------- */
 
 app.UseSwagger();
 app.UseSwaggerUI();
 
+/* -------------------- MIDDLEWARE -------------------- */
 
-app.UseMiddleware<ExceptionMiddleware>();
+// Custom middlewares (safe order)
 app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseMiddleware<ResponseWrapperMiddleware>();
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseCors("NyayabharatCors");
 
-
 app.UseHttpsRedirection();
+
+/* -------------------- AUTH -------------------- */
+
 if (jwtEnabled)
 {
     app.UseAuthentication();
     app.UseAuthorization();
 }
+
+/* -------------------- ENDPOINTS -------------------- */
 
 app.MapControllers();
 
