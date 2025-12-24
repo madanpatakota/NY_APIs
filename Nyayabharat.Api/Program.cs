@@ -18,11 +18,15 @@ builder.Services.AddControllers(options =>
 
 
 
+bool jwtEnabled;
+
 builder.Services
     .AddApplicationServices(builder.Configuration)
     .AddSwaggerDocumentation()
-    .AddJwtAuthentication(builder.Configuration)
+    .AddJwtAuthentication(builder.Configuration, out jwtEnabled)
     .AddAuthorizationPolicies();
+
+
 
 builder.Services.AddCorsPolicy();
 //builder.Services.AddJwtAuthentication(builder.Configuration);
@@ -49,8 +53,12 @@ app.UseCors("NyayabharatCors");
 
 
 app.UseHttpsRedirection();
-app.UseAuthentication();
-app.UseAuthorization();
+if (jwtEnabled)
+{
+    app.UseAuthentication();
+    app.UseAuthorization();
+}
+
 app.MapControllers();
 
 app.Run();
