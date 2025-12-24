@@ -48,9 +48,10 @@ app.UseSwaggerUI();
 /* -------------------- MIDDLEWARE -------------------- */
 
 // Custom middlewares (safe order)
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseMiddleware<ResponseWrapperMiddleware>();
-app.UseMiddleware<ExceptionMiddleware>();
+
 
 app.UseCors("NyayabharatCors");
 
