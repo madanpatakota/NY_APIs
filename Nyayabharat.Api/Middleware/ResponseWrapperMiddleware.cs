@@ -55,6 +55,7 @@ namespace Nyayabharat.Api.Middlewares
                 Errors = context.Response.StatusCode >= 400 ? data : null
             };
 
+            context.Response.StatusCode = response.StatusCode;
             context.Response.ContentType = "application/json";
             await context.Response.WriteAsync(JsonSerializer.Serialize(response));
         }
