@@ -43,7 +43,7 @@ app.UseSwaggerUI();
 
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<RequestLoggingMiddleware>();
-app.UseMiddleware<ResponseWrapperMiddleware>();
+//app.UseMiddleware<ResponseWrapperMiddleware>();
 
 app.UseCors("NyayabharatCors");
 
