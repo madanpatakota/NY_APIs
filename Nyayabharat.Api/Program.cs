@@ -21,7 +21,7 @@ builder.Services.AddControllers(options =>
 builder.Services
     .AddApplicationServices(builder.Configuration)
     .AddSwaggerDocumentation()
-   // .AddJwtAuthentication(builder.Configuration)
+    .AddJwtAuthentication(builder.Configuration)
     .AddAuthorizationPolicies();
 
 builder.Services.AddCorsPolicy();
