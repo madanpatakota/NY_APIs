@@ -10,7 +10,7 @@ builder.Services.AddControllers(options =>
 {
     options.Filters.Add<ValidationFilter>();
     options.Filters.Add<AuthorizationFilter>();
-    options.Filters.Add<AuditLogFilter>();
+   // options.Filters.Add<AuditLogFilter>();
 });
 
 //using Nyayabharat.Api.Middlewares;
