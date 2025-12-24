@@ -17,7 +17,13 @@ builder.Services
     .AddApplicationServices(builder.Configuration)
     .AddSwaggerDocumentation();
 
+builder.Services.AddAuthentication()
+    .AddJwtBearer();
+
 builder.Services.AddCorsPolicy();
+
+
+//builder.Services.AddCorsPolicy();
 
 /* ---------------- App ---------------- */
 
