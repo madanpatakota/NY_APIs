@@ -8,9 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers(options =>
 {
-    //options.Filters.Add<ValidationFilter>();
-    //options.Filters.Add<AuthorizationFilter>();
-   // options.Filters.Add<AuditLogFilter>();
+    options.Filters.Add<ValidationFilter>();
+    options.Filters.Add<AuthorizationFilter>();
+    options.Filters.Add<AuditLogFilter>();
 });
 
 //using Nyayabharat.Api.Middlewares;
@@ -20,9 +20,9 @@ builder.Services.AddControllers(options =>
 
 builder.Services
     .AddApplicationServices(builder.Configuration)
-    .AddSwaggerDocumentation();
-   // .AddJwtAuthentication(builder.Configuration)
-   // .AddAuthorizationPolicies();
+    .AddSwaggerDocumentation()
+    .AddJwtAuthentication(builder.Configuration)
+    .AddAuthorizationPolicies();
 
 builder.Services.AddCorsPolicy();
 //builder.Services.AddJwtAuthentication(builder.Configuration);
@@ -41,16 +41,16 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 
-//app.UseMiddleware<ExceptionMiddleware>();
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<RequestLoggingMiddleware>();
-//app.UseMiddleware<ResponseWrapperMiddleware>();
+app.UseMiddleware<ResponseWrapperMiddleware>();
 
 app.UseCors("NyayabharatCors");
 
 
 app.UseHttpsRedirection();
-//app.UseAuthentication();
-//app.UseAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
