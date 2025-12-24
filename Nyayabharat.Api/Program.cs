@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add<ValidationFilter>();
-    options.Filters.Add<AuthorizationFilter>();
+    //options.Filters.Add<AuthorizationFilter>();
    // options.Filters.Add<AuditLogFilter>();
 });
 
