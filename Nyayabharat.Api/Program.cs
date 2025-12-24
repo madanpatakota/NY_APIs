@@ -39,11 +39,15 @@ builder.Services.AddCorsPolicy();
 /* -------------------- APP -------------------- */
 
 var app = builder.Build();
+app.Logger.LogInformation("Nyayabharat API started successfully");
+
 
 /* -------------------- SWAGGER -------------------- */
 
 app.UseSwagger();
 app.UseSwaggerUI();
+app.Logger.LogInformation("Nyayabharat API started successfully-Next");
+
 
 /* -------------------- MIDDLEWARE -------------------- */
 
