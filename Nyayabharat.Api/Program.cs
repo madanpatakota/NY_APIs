@@ -41,7 +41,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 
-app.UseMiddleware<ExceptionMiddleware>();
+//app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<RequestLoggingMiddleware>();
 //app.UseMiddleware<ResponseWrapperMiddleware>();
 
