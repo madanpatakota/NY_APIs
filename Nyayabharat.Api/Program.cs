@@ -18,7 +18,12 @@ builder.Services
     .AddSwaggerDocumentation();
 
 builder.Services.AddAuthentication()
-    .AddJwtBearer();
+    .AddJwtBearer(options =>
+    {
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = true;
+    });
+
 
 builder.Services.AddCorsPolicy();
 
