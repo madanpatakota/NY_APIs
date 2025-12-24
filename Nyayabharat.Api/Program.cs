@@ -22,9 +22,15 @@ bool jwtEnabled;
 
 builder.Services
     .AddApplicationServices(builder.Configuration)
-    .AddSwaggerDocumentation()
-    .AddJwtAuthentication(builder.Configuration, out jwtEnabled)
-    .AddAuthorizationPolicies();
+    .AddSwaggerDocumentation();
+
+builder.Services.AddJwtAuthentication(builder.Configuration, out jwtEnabled);
+
+if (jwtEnabled)
+{
+    builder.Services.AddAuthorizationPolicies();
+}
+
 
 
 
