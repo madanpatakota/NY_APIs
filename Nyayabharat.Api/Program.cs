@@ -21,7 +21,7 @@ builder.Services.AddControllers(options =>
 builder.Services
     .AddApplicationServices(builder.Configuration)
     .AddSwaggerDocumentation()
-    .AddJwtAuthentication(builder.Configuration)
+   // .AddJwtAuthentication(builder.Configuration)
     .AddAuthorizationPolicies();
 
 builder.Services.AddCorsPolicy();
@@ -50,7 +50,7 @@ app.UseCors("NyayabharatCors");
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
-//app.UseAuthorization();
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
