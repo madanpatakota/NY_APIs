@@ -11,9 +11,9 @@ namespace Nyayabharat.Api.Controllers
     {
         [HttpGet]
         [Route("GetName")]
-        public string GetName()
+        public async Task<IActionResult>  GetName()
         {
-            return "Madan";
+            return Ok("Madan");
         }
     }
 }
