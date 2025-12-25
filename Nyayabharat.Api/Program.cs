@@ -1,6 +1,7 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Nyayabharat.Api.Extensions;
-using Nyayabharat.Api.Middlewares;
 using Nyayabharat.Api.Filters;
+using Nyayabharat.Api.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,12 +18,17 @@ builder.Services
     .AddApplicationServices(builder.Configuration)
     .AddSwaggerDocumentation();
 
-builder.Services.AddAuthentication()
-    .AddJwtBearer(options =>
-    {
-        options.RequireHttpsMetadata = false;
-        options.SaveToken = true;
-    });
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+});
+
 
 
 builder.Services.AddCorsPolicy();
