@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nyayabharat.Application.Interfaces.Services;
+using Nyayabharat.Domain.Entities;
 
 namespace Nyayabharat.Api.Controllers
 {
@@ -32,5 +33,22 @@ namespace Nyayabharat.Api.Controllers
             if (text == null) return NotFound();
             return Ok(text);
         }
+
+
+        [HttpPost("bulk")]
+        public async Task<IActionResult> GetBulk([FromBody] TranslationBulkRequest request)
+        {
+            var result = await _translationService.GetBulkAsync(
+                request.EntityType,
+                request.EntityId,
+                request.FieldNames,
+                request.LanguageCode);
+
+            return Ok(result);
+        }
+
     }
+
+
+
 }

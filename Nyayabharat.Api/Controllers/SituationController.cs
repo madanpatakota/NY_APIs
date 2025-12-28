@@ -25,14 +25,21 @@ namespace Nyayabharat.Api.Controllers
         }
 
 
-        [Authorize]
+        //[Authorize]
         //Endpoint to get law by situation id http://https://localhost:7156/api/situations/{id}/law
         [HttpGet("{id}/law")]
         public async Task<IActionResult> GetLaw(int id)
         {
-            var result = await _situationLawService.GetLawBySituationAsync(id);
+            try
+            {
+                var result = await _situationLawService.GetLawBySituationAsync(id);
             if (result == null) return NotFound();
-            return Ok(result);
+            
+                return Ok(result);
+            }
+            catch (Exception ex) { 
+                return BadRequest(ex.Message);
+            }
         }
 
         [Authorize]

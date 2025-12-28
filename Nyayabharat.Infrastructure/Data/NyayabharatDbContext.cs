@@ -46,7 +46,7 @@ namespace Nyayabharat.Infrastructure.Data
         //public DbSet<QuizAttempt> QuizAttempts { get; set; }
         //public DbSet<QuizAttemptQuestion> QuizAttemptQuestions { get; set; }
         //public DbSet<QuizAttemptAnswer> QuizAttemptAnswers { get; set; }
-       // public DbSet<UserProgress> UserProgress { get; set; }
+        // public DbSet<UserProgress> UserProgress { get; set; }
 
         //public DbSet<Language> Languages { get; set; }
         //public DbSet<Translation> Translations { get; set; }
@@ -56,31 +56,25 @@ namespace Nyayabharat.Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<SectionAmendment>()
-            //    .HasKey(x => new { x.SectionId, x.AmendmentId });
-
-            //modelBuilder.Entity<ConceptSection>()
-            //    .HasKey(x => new { x.ConceptId, x.SectionId });
-
-            //modelBuilder.Entity<SituationSection>()
-            //    .HasKey(x => new { x.SituationId, x.SectionId });
-
-            //modelBuilder.Entity<SituationConcept>()
-            //    .HasKey(x => new { x.SituationId, x.ConceptId });
-
-            //base.OnModelCreating(modelBuilder);
-
             modelBuilder.Entity<SectionAmendment>()
-        .HasKey(x => new { x.SectionId, x.AmendmentId });
+                .HasKey(x => new { x.SectionId, x.AmendmentId });
+            modelBuilder.Entity<SectionAmendment>()
+                .ToTable("SectionAmendmentMap");
 
             modelBuilder.Entity<ConceptSection>()
                 .HasKey(x => new { x.ConceptId, x.SectionId });
+            modelBuilder.Entity<ConceptSection>()
+                .ToTable("ConceptSectionMap");
 
             modelBuilder.Entity<SituationSection>()
                 .HasKey(x => new { x.SituationId, x.SectionId });
+            modelBuilder.Entity<SituationSection>()
+                .ToTable("SituationSectionMap");
 
             modelBuilder.Entity<SituationConcept>()
                 .HasKey(x => new { x.SituationId, x.ConceptId });
+            modelBuilder.Entity<SituationConcept>()
+                .ToTable("SituationConceptMap");
 
             base.OnModelCreating(modelBuilder);
         }

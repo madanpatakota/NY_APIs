@@ -20,6 +20,26 @@ namespace Nyayabharat.Application.Services
             _conceptRepository = conceptRepository;
         }
 
+        //public async Task<SituationLawResponseDto?> GetLawBySituationAsync(int situationId)
+        //{
+        //    var situation = await _situationRepository.GetByIdAsync(situationId);
+        //    if (situation == null) return null;
+
+        //    var sections = await _sectionRepository.GetBySituationIdAsync(situationId);
+        //    var concepts = await _conceptRepository.GetBySituationIdAsync(situationId);
+
+        //    return new SituationLawResponseDto
+        //    {
+        //        SituationId = situation.SituationId,
+        //        Title = situation.Title,
+        //        Description = situation.Description,
+        //        Severity = situation.Severity.ToString(),
+        //        ApplicableSections = sections,
+        //        RelatedConcepts = concepts
+        //    };
+        //}
+
+
         public async Task<SituationLawResponseDto?> GetLawBySituationAsync(int situationId)
         {
             var situation = await _situationRepository.GetByIdAsync(situationId);
@@ -34,9 +54,23 @@ namespace Nyayabharat.Application.Services
                 Title = situation.Title,
                 Description = situation.Description,
                 Severity = situation.Severity.ToString(),
-                ApplicableSections = sections,
-                RelatedConcepts = concepts
+
+                ApplicableSections = sections.Select(s => new SituationSectionDto
+                {
+                    SectionId = s.SectionId,
+                    SectionNumber = s.SectionNumber,
+                    SectionTitle = s.SectionTitle,
+                    ActShortName = s.ActShortName
+                }).ToList(),
+
+                RelatedConcepts = concepts.Select(c => new SituationConceptDto
+                {
+                    ConceptId = c.ConceptId,
+                    ConceptName = c.ConceptName,
+                    SimpleDefinition = c.SimpleDefinition
+                }).ToList()
             };
         }
+
     }
 }

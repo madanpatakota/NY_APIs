@@ -12,5 +12,7 @@ namespace Nyayabharat.Domain.Entities
 
         public Situation Situation { get; set; } = null!;
         public Section Section { get; set; } = null!;
+
+        public Act Act { get; set; } = null!;
     }
 }
