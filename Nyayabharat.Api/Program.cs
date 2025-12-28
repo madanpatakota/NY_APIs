@@ -1,45 +1,56 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using Nyayabharat.Api.Extensions;
+using Nyayabharat.Api.Filters;
+using Nyayabharat.Api.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+//builder.Services.AddControllers();
 
-builder.Services.AddSwaggerGen();
-
-// 🔑 FULL JWT REGISTRATION (NO CONDITIONALS)
-builder.Services.AddAuthentication(options =>
+builder.Services.AddControllers(options =>
 {
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.RequireHttpsMetadata = false;
-    options.SaveToken = true;
-
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = false,
-        ValidateAudience = false,
-        ValidateLifetime = false,
-        ValidateIssuerSigningKey = false,
-        IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes("TEMP_DEV_KEY_1234567890")
-        )
-    };
+    options.Filters.Add<ValidationFilter>();
+   // options.Filters.Add<AuthorizationFilter>();
+    options.Filters.Add<AuditLogFilter>();
 });
 
-builder.Services.AddAuthorization();
+//using Nyayabharat.Api.Middlewares;
+
+
+
+
+builder.Services
+    .AddApplicationServices(builder.Configuration)
+    .AddSwaggerDocumentation();
+    //.AddJwtAuthentication(builder.Configuration)
+    //.AddAuthorizationPolicies();
+
+builder.Services.AddCorsPolicy();
+//builder.Services.AddJwtAuthentication(builder.Configuration);
+
+
 
 var app = builder.Build();
+
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
 
 app.UseSwagger();
 app.UseSwaggerUI();
 
+
+app.UseMiddleware<ExceptionMiddleware>();
+app.UseMiddleware<RequestLoggingMiddleware>();
+app.UseMiddleware<ResponseWrapperMiddleware>();
+
+app.UseCors("NyayabharatCors");
+
+
+app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
+
 app.Run();
