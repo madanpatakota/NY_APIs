@@ -39,5 +39,14 @@ namespace Nyayabharat.Api.Controllers
             if (section == null) return NotFound();
             return Ok(section);
         }
+
+
+        [HttpGet("{sectionId}/situations")]
+        public async Task<IActionResult> GetSituationsBySection(int sectionId)
+        {
+            var result = await _sectionService.GetSituationsBySectionAsync(sectionId);
+            return Ok(result);
+        }
+
     }
 }

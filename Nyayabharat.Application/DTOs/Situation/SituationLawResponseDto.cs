@@ -9,4 +9,6 @@ public class SituationLawResponseDto
 
     public List<SituationSectionDto> ApplicableSections { get; set; } = [];
     public List<SituationConceptDto> RelatedConcepts { get; set; } = [];
+    public List<SituationGuidanceDto> Guidance { get; set; } = new();
+
 }

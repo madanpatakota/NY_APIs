@@ -33,6 +33,7 @@ namespace Nyayabharat.Api.Extensions
             services.AddScoped<ISituationLawService, SituationLawService>();
 
             services.AddScoped<IQuizAttemptRepository, QuizAttemptRepository>();
+            services.AddScoped<IQuizAttemptAnswerRepository, QuizAttemptAnswerRepository>();
             services.AddScoped<IUserProgressRepository, UserProgressRepository>();
 
             services.AddScoped<ITranslationRepository, TranslationRepository>();
@@ -40,6 +41,7 @@ namespace Nyayabharat.Api.Extensions
 
             services.AddScoped<IUserRepository, UserRepository>();
 
+            services.AddScoped<ISituationGuidanceRepository, SituationGuidanceRepository>();
 
 
             return services;

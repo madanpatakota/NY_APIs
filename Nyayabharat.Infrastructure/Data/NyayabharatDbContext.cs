@@ -51,6 +51,7 @@ namespace Nyayabharat.Infrastructure.Data
         //public DbSet<Language> Languages { get; set; }
         //public DbSet<Translation> Translations { get; set; }
 
+        public DbSet<SituationGuidance> SituationGuidance { get; set; }
 
 
 

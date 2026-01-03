@@ -4,13 +4,28 @@ namespace Nyayabharat.Application.Interfaces.Services
 {
     public interface IQuizService
     {
-        //Task<IEnumerable<QuizQuestionDto>> StartQuizAsync(int situationId, string difficulty);
-        Task<QuizResultDto> SubmitQuizAsync(int attemptId, Dictionary<int, int> answers);
-
-        Task<IEnumerable<QuizQuestionDto>> StartQuizAsync(
+        Task<IEnumerable<QuizQuestionDto>> StartSituationQuizAsync(
             int situationId,
             string difficulty,
-            string userType);
+            string userType
+        );
+
+        Task<IEnumerable<QuizQuestionDto>> StartSectionQuizAsync(
+            int sectionId,
+            string difficulty,
+            string userType
+        );
+
+        Task<QuizResultDto> SubmitQuizAsync(
+            int attemptId,
+            Dictionary<int, int> answers
+        );
+
+
+
+
+
+
 
     }
 }

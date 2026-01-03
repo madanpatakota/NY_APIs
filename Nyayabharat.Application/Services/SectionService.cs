@@ -1,4 +1,5 @@
-﻿using Nyayabharat.Application.Interfaces.Repositories;
+﻿using Nyayabharat.Application.DTOs.Situation;
+using Nyayabharat.Application.Interfaces.Repositories;
 using Nyayabharat.Application.Interfaces.Services;
 using Nyayabharat.Domain.Entities;
 
@@ -22,5 +23,18 @@ namespace Nyayabharat.Application.Services
         {
             return await _sectionRepository.GetSectionWithDetailsAsync(sectionId);
         }
+
+        public async Task<List<SituationDto>> GetSituationsBySectionAsync(int sectionId)
+        {
+            var situations = await _sectionRepository.GetSituationsBySectionIdAsync(sectionId);
+
+            return situations.Select(s => new SituationDto
+            {
+                SituationId = s.SituationId,
+                Title = s.Title,
+                Severity = s.Severity.ToString()
+            }).ToList();
+        }
+
     }
 }

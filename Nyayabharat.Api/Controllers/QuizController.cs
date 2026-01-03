@@ -4,9 +4,9 @@ using Nyayabharat.Application.Interfaces.Services;
 
 namespace Nyayabharat.Api.Controllers
 {
-    [AllowAnonymous]
     [ApiController]
     [Route("api/quiz")]
+    [Authorize] // quiz must be authenticated
     public class QuizController : ControllerBase
     {
         private readonly IQuizService _quizService;
@@ -16,31 +16,69 @@ namespace Nyayabharat.Api.Controllers
             _quizService = quizService;
         }
 
-
-
-        [Authorize]
-        //Endpoint to start a quiz http://https://localhost:7156/api/quiz/start/{situationId}/{difficulty}
-        [HttpGet("start/{situationId}/{difficulty}")]
-        public async Task<IActionResult> Start(int situationId, string difficulty)
+        // =========================================
+        // START SITUATION-BASED QUIZ
+        // GET: /api/quiz/situation/{situationId}/{difficulty}
+        // =========================================
+        [HttpGet("situation/{situationId:int}/{difficulty}")]
+        public async Task<IActionResult> StartSituationQuiz(
+            int situationId,
+            string difficulty)
         {
-            var userType = User.FindFirst("UserType")!.Value;
+            var userType = User.FindFirst("UserType")?.Value;
 
-            var questions = await _quizService.StartQuizAsync(
-                situationId,
-                difficulty,
-                userType
-            );
-            //var questions = await _quizService.StartQuizAsync(situationId, difficulty);
+            if (string.IsNullOrEmpty(userType))
+                return Unauthorized("UserType missing");
+
+            var questions = await _quizService
+                .StartSituationQuizAsync(
+                    situationId,
+                    difficulty,
+                    userType
+                );
+
             return Ok(questions);
         }
 
-
-        [Authorize]
-        //Endpoint to submit quiz answers http://https://localhost:7156/api/quiz/submit/{attemptId}
-        [HttpPost("submit/{attemptId}")]
-        public async Task<IActionResult> Submit(int attemptId, [FromBody] Dictionary<int, int> answers)
+        // =========================================
+        // START SECTION-BASED QUIZ
+        // GET: /api/quiz/section/{sectionId}/{difficulty}
+        // =========================================
+        [HttpGet("section/{sectionId:int}/{difficulty}")]
+        public async Task<IActionResult> StartSectionQuiz(
+            int sectionId,
+            string difficulty)
         {
-            var result = await _quizService.SubmitQuizAsync(attemptId, answers);
+            var userType = User.FindFirst("UserType")?.Value;
+
+            if (string.IsNullOrEmpty(userType))
+                return Unauthorized("UserType missing");
+
+            var questions = await _quizService
+                .StartSectionQuizAsync(
+                    sectionId,
+                    difficulty,
+                    userType
+                );
+
+            return Ok(questions);
+        }
+
+        // =========================================
+        // SUBMIT QUIZ
+        // POST: /api/quiz/submit/{attemptId}
+        // =========================================
+        [HttpPost("submit/{attemptId:int}")]
+        public async Task<IActionResult> SubmitQuiz(
+            int attemptId,
+            [FromBody] Dictionary<int, int> answers)
+        {
+            if (answers == null || !answers.Any())
+                return BadRequest("Answers are required");
+
+            var result = await _quizService
+                .SubmitQuizAsync(attemptId, answers);
+
             return Ok(result);
         }
     }

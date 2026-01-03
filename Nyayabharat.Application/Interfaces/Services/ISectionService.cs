@@ -1,4 +1,5 @@
-﻿using Nyayabharat.Domain.Entities;
+﻿using Nyayabharat.Application.DTOs.Situation;
+using Nyayabharat.Domain.Entities;
 
 namespace Nyayabharat.Application.Interfaces.Services
 {
@@ -6,5 +7,8 @@ namespace Nyayabharat.Application.Interfaces.Services
     {
         Task<IEnumerable<Section>> GetByActIdAsync(int actId);
         Task<Section?> GetWithDetailsAsync(int sectionId);
+
+        Task<List<SituationDto>> GetSituationsBySectionAsync(int sectionId);
+
     }
 }
