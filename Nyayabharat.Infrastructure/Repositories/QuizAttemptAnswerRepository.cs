@@ -17,8 +17,15 @@ namespace Nyayabharat.Infrastructure.Repositories
 
         public async Task AddAnswersAsync(List<QuizAttemptAnswer> answers)
         {
-            await _dbSet.AddRangeAsync(answers);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _dbSet.AddRangeAsync(answers);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
 

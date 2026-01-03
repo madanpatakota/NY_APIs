@@ -25,97 +25,182 @@ namespace Nyayabharat.Application.Services
         // ================================
         // START SITUATION QUIZ
         // ================================
-        public async Task<IEnumerable<QuizQuestionDto>> StartSituationQuizAsync(
-            int situationId,
-            string difficulty,
-            string userType)
+        public async Task<QuizStartResponseDto> StartSituationQuizAsync(
+      int situationId,
+      string difficulty,
+      string userType)
         {
             var parsedUserType = Enum.Parse<UserType>(userType, true);
 
             var questions = await _questionRepository
                 .GetQuizQuestionsBySituationAsync(
-                    situationId,
-                    difficulty,
-                    parsedUserType);
+                    situationId, difficulty, parsedUserType);
 
-            return MapToDto(questions);
+            var list = questions.ToList();
+
+            // ✅ CREATE ATTEMPT (anonymous allowed)
+            var attempt = new QuizAttempt
+            {
+                UserId = 0, // anonymous (login later)
+                StartedOn = DateTime.UtcNow,
+                Difficulty = difficulty,
+                TotalQuestions = list.Count
+            };
+
+            await _attemptRepository.AddAttemptAsync(attempt);
+            // 🔑 attempt.AttemptId is now available
+
+            var firstQuestion = list.FirstOrDefault();
+            var act = firstQuestion?.Section?.Act;
+
+            return new QuizStartResponseDto
+            {
+                AttemptId = attempt.AttemptId,
+
+                ActId = act?.ActId,
+                ActShortName = act?.ActShortName,
+                ActName = act?.ActName,
+
+                Questions = MapToDto(list)
+            };
         }
+
+
 
         // ================================
         // START SECTION QUIZ
         // ================================
-        public async Task<IEnumerable<QuizQuestionDto>> StartSectionQuizAsync(
-            int sectionId,
-            string difficulty,
-            string userType)
+        public async Task<QuizStartResponseDto> StartSectionQuizAsync(
+     int sectionId,
+     string difficulty,
+     string userType)
         {
             var parsedUserType = Enum.Parse<UserType>(userType, true);
 
-            var questions = await _questionRepository
-                .GetQuizQuestionsBySectionAsync(
-                    sectionId,
-                    difficulty,
-                    parsedUserType);
+            var questions = (await _questionRepository
+                .GetQuizQuestionsBySectionAsync(sectionId, difficulty, parsedUserType))
+                .ToList();
 
-            return MapToDto(questions);
+            if (!questions.Any())
+                throw new Exception("No quiz questions found");
+
+            // ✅ CREATE ATTEMPT FIRST
+            var attempt = new QuizAttempt
+            {
+                UserId = null, // anonymous
+                StartedOn = DateTime.UtcNow,
+                Difficulty = difficulty,
+                TotalQuestions = questions.Count
+            };
+
+            await _attemptRepository.AddAttemptAsync(attempt);
+
+            var act = questions.First().Section?.Act;
+
+            return new QuizStartResponseDto
+            {
+                AttemptId = attempt.AttemptId,   // ✅ REAL ID
+                ActId = act?.ActId,
+                ActShortName = act?.ActShortName,
+                ActName = act?.ActName,
+                Questions = MapToDto(questions)
+            };
         }
+
+
+
 
         // ================================
         // SUBMIT QUIZ
         // ================================
         public async Task<QuizResultDto> SubmitQuizAsync(
-            int attemptId,
-            Dictionary<int, int> answers)
+     int attemptId,
+     Dictionary<int, int> answers)
         {
-            int total = answers.Count;
-            int correct = 0;
+            if (answers == null || answers.Count == 0)
+                throw new Exception("No answers submitted");
+
+            int totalQuestions = answers.Count;
+            int correctAnswers = 0;
 
             var attemptAnswers = new List<QuizAttemptAnswer>();
 
+            int? sectionId = null;
+            string? sectionTitle = null;
+
             foreach (var entry in answers)
             {
+                int questionId = entry.Key;
+                int selectedOptionId = entry.Value;
+
                 var question = await _questionRepository
-                    .GetQuestionWithOptionsAsync(entry.Key);
+                    .GetQuestionWithOptionsAsync(questionId);
 
-                if (question == null) continue;
+                if (question == null)
+                    continue;
 
-                var selected = question.Options
-                    .FirstOrDefault(o => o.OptionId == entry.Value);
+                // Capture section info ONCE (all questions belong to same section)
+                if (sectionId == null && question.SectionId != null)
+                {
+                    sectionId = question.SectionId;
 
-                bool isCorrect = selected != null && selected.IsCorrect;
+                    if (question.Section != null)
+                    {
+                        sectionTitle =
+                            $"{question.Section.Act.ActShortName} " +
+                            $"{question.Section.SectionNumber} – {question.Section.SectionTitle}";
 
-                if (isCorrect) correct++;
+                    }
+                }
+
+                var selectedOption = question.Options
+                    .FirstOrDefault(o => o.OptionId == selectedOptionId);
+
+                bool isCorrect = selectedOption != null && selectedOption.IsCorrect;
+
+                if (isCorrect)
+                    correctAnswers++;
 
                 attemptAnswers.Add(new QuizAttemptAnswer
                 {
                     AttemptId = attemptId,
-                    QuestionId = entry.Key,
-                    SelectedOptionId = entry.Value,
+                    QuestionId = questionId,
+                    SelectedOptionId = selectedOptionId,
                     IsCorrect = isCorrect
                 });
             }
 
+            // Save answers
             await _answerRepository.AddAnswersAsync(attemptAnswers);
 
+            // Update attempt
             var attempt = await _attemptRepository.GetByIdAsync(attemptId);
 
-            if (attempt != null)
-            {
-                attempt.CompletedOn = DateTime.UtcNow;
-                attempt.CorrectAnswers = correct;
-                attempt.Score = total == 0 ? 0 : (correct * 100) / total;
+            if (attempt == null)
+                throw new Exception("Quiz attempt not found");
 
-                await _attemptRepository.UpdateAttemptAsync(attempt);
-            }
+            attempt.CompletedOn = DateTime.UtcNow;
+            attempt.TotalQuestions = totalQuestions;
+            attempt.CorrectAnswers = correctAnswers;
+            attempt.Score = (correctAnswers * 100) / totalQuestions;
 
+            await _attemptRepository.UpdateAttemptAsync(attempt);
+
+            // Return result DTO
             return new QuizResultDto
             {
-                AttemptId = attemptId,
-                TotalQuestions = total,
-                CorrectAnswers = correct,
-                Score = total == 0 ? 0 : (correct * 100) / total
+                AttemptId = attempt.AttemptId,
+
+                SectionId = sectionId,
+                SectionTitle = sectionTitle,
+
+                TotalQuestions = totalQuestions,
+                CorrectAnswers = correctAnswers,
+                Score = attempt.Score,
+                CompletedOn = attempt.CompletedOn.Value
             };
         }
+
 
         // ================================
         // PRIVATE MAPPER

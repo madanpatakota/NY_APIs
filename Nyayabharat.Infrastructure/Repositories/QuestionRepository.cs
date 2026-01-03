@@ -67,7 +67,10 @@ namespace Nyayabharat.Infrastructure.Repositories
         {
             return await _context.Questions
                 .Include(q => q.Options)
+                .Include(q => q.Section)
+                    .ThenInclude(s => s.Act)
                 .FirstOrDefaultAsync(q => q.QuestionId == questionId);
         }
+
     }
 }

@@ -50,5 +50,11 @@ namespace Nyayabharat.Domain.Entities
         // AUDIT (OPTIONAL)
         // =========================
         public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
+
+
+        // ✅ ADD THIS NAVIGATION
+        [ForeignKey(nameof(SectionId))]
+        public Section? Section { get; set; }
+
     }
 }

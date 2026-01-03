@@ -12,13 +12,31 @@ public class QuizAttemptRepository
 
     public async Task AddAttemptAsync(QuizAttempt attempt)
     {
-        await _dbSet.AddAsync(attempt);
-        await _context.SaveChangesAsync();
+        try
+        {
+            await _dbSet.AddAsync(attempt);
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            // Log the exception (you can use any logging framework)
+            Console.WriteLine($"Error adding quiz attempt: {ex.Message}");
+            throw; // Re-throw the exception after logging it
+        }
     }
 
     public async Task UpdateAttemptAsync(QuizAttempt attempt)
     {
-        _dbSet.Update(attempt);
-        await _context.SaveChangesAsync();
+        try {
+            _dbSet.Update(attempt);
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            // Log the exception (you can use any logging framework)
+            Console.WriteLine($"Error updating quiz attempt: {ex.Message}");
+            throw; // Re-throw the exception after logging it
+        }
+       
     }
 }

@@ -7,7 +7,7 @@ namespace Nyayabharat.Domain.Entities
 
         [Key]
         public int AttemptId { get; set; }
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
         public DateTime StartedOn { get; set; }
         public DateTime? CompletedOn { get; set; }
         public int TotalQuestions { get; set; }
