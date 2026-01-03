@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Nyayabharat.Application.DTOs.Section;
 using Nyayabharat.Application.DTOs.Situation;
 using Nyayabharat.Application.Interfaces.Repositories;
 using Nyayabharat.Domain.Entities;
@@ -70,6 +71,70 @@ namespace Nyayabharat.Infrastructure.Repositories
                 .ToListAsync();
         }
 
+
+        public async Task<SectionParallelDto?> GetBnsEquivalentAsync(int ipcSectionId)
+        {
+            var bnsActId = await _context.Acts
+                .Where(a => a.ActShortName == "BNS")
+                .Select(a => a.ActId)
+                .FirstAsync();
+
+            return await (
+                from pm in _context.SectionParallelMap
+                join ipc in _context.Sections on pm.OldSectionId equals ipc.SectionId
+                join bns in _context.Sections
+                    on pm.NewSectionNumber equals bns.SectionNumber into bnsJoin
+                from bns in bnsJoin.DefaultIfEmpty()
+                where pm.OldSectionId == ipcSectionId
+                      && pm.NewActId == bnsActId
+                select new SectionParallelDto
+                {
+                    IpcSectionId = ipc.SectionId,
+                    IpcSectionNumber = ipc.SectionNumber,
+                    MappingType = pm.MappingType,
+                    BnsSectionId = bns != null ? bns.SectionId : null,
+                    BnsSectionNumber = pm.NewSectionNumber,
+                    BnsSectionTitle = bns != null ? bns.SectionTitle : null,
+                    Notes = pm.Notes
+                }
+            ).FirstOrDefaultAsync();
+        }
+
+        public async Task<SectionParallelDto?> GetParallelSectionAsync(
+    int sectionId,
+    string targetActShortName)
+        {
+            var targetActId = await _context.Acts
+                .Where(a => a.ActShortName == targetActShortName)
+                .Select(a => a.ActId)
+                .FirstOrDefaultAsync();
+
+            if (targetActId == 0) return null;
+
+            return await (
+                from pm in _context.SectionParallelMap
+                join src in _context.Sections
+                    on pm.OldSectionId equals src.SectionId
+                join tgt in _context.Sections
+                    on pm.NewSectionNumber equals tgt.SectionNumber
+                    into tgtJoin
+                from tgt in tgtJoin.DefaultIfEmpty()
+                where pm.OldSectionId == sectionId
+                      && pm.NewActId == targetActId
+                select new SectionParallelDto
+                {
+                    IpcSectionId = src.SectionId,
+                    IpcSectionNumber = src.SectionNumber,
+
+                    BnsSectionId = tgt != null ? tgt.SectionId : null,
+                    BnsSectionNumber = pm.NewSectionNumber,
+                    BnsSectionTitle = tgt != null ? tgt.SectionTitle : null,
+
+                    MappingType = pm.MappingType,
+                    Notes = pm.Notes
+                }
+            ).FirstOrDefaultAsync();
+        }
 
     }
 }

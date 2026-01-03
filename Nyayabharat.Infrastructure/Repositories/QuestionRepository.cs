@@ -41,18 +41,25 @@ namespace Nyayabharat.Infrastructure.Repositories
             string difficulty,
             UserType userType)
         {
-            return await _context.Questions
-                .Include(q => q.Options)
-                .Where(q =>
-                    _context.SituationSections   // ✅ FIX IS HERE
-                        .Any(ss =>
-                            ss.SectionId == sectionId &&
-                            ss.SituationId == q.SituationId
-                        ) &&
-                    q.Difficulty == difficulty &&
-                    q.AllowedUserType == userType
-                )
-                .ToListAsync();
+            try
+            {
+                return await _context.Questions
+                    .Include(q => q.Options)
+                    .Where(q =>
+                        _context.SituationSections   // ✅ FIX IS HERE
+                            .Any(ss =>
+                                ss.SectionId == sectionId &&
+                                ss.SituationId == q.SituationId
+                            ) &&
+                        q.Difficulty == difficulty &&
+                        q.AllowedUserType == userType
+                    )
+                    .ToListAsync();
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
         }
 
 

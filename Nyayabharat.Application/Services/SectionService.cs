@@ -1,4 +1,6 @@
-﻿using Nyayabharat.Application.DTOs.Situation;
+﻿using Microsoft.EntityFrameworkCore;
+using Nyayabharat.Application.DTOs.Section;
+using Nyayabharat.Application.DTOs.Situation;
 using Nyayabharat.Application.Interfaces.Repositories;
 using Nyayabharat.Application.Interfaces.Services;
 using Nyayabharat.Domain.Entities;
@@ -35,6 +37,21 @@ namespace Nyayabharat.Application.Services
                 Severity = s.Severity.ToString()
             }).ToList();
         }
+
+        public async Task<SectionParallelDto?> GetBnsEquivalentAsync(int ipcSectionId)
+        {
+            return await _sectionRepository.GetBnsEquivalentAsync(ipcSectionId);
+        }
+
+        public async Task<SectionParallelDto?> GetParallelSectionAsync(
+     int sectionId,
+     string targetActShortName)
+        {
+            return await _sectionRepository
+                .GetParallelSectionAsync(sectionId, targetActShortName);
+        }
+
+
 
     }
 }

@@ -48,5 +48,70 @@ namespace Nyayabharat.Api.Controllers
             return Ok(result);
         }
 
+
+        // GET: api/sections/{sectionId}
+        //// Get section details (content, subsections, clauses)
+        //[HttpGet("{sectionId:int}")]
+        //public async Task<IActionResult> GetById(int sectionId)
+        //{
+        //    var section = await _sectionService.GetWithDetailsAsync(sectionId);
+        //    if (section == null)
+        //        return NotFound(new { message = "Section not found" });
+
+        //    return Ok(section);
+        //}
+
+        //// GET: api/sections/by-act/{actId}
+        //// Get all sections under an Act
+        //[HttpGet("by-act/{actId:int}")]
+        //public async Task<IActionResult> GetByAct(int actId)
+        //{
+        //    var sections = await _sectionService.GetByActIdAsync(actId);
+        //    return Ok(sections);
+
+        // GET: api/sections/{id}/bns
+        [HttpGet("{id:int}/bns")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetBnsEquivalent(int id)
+        {
+            var result = await _sectionService.GetBnsEquivalentAsync(id);
+
+            if (result == null)
+                return NotFound(new { message = "No BNS mapping found for this IPC section" });
+
+            if (result.MappingType == "Omitted")
+            {
+                return Ok(new
+                {
+                    ipcSectionId = result.IpcSectionId,
+                    ipcSectionNumber = result.IpcSectionNumber,
+                    status = "Omitted",
+                    notes = result.Notes
+                });
+            }
+
+            return Ok(result);
+        }
+
+
+        [HttpGet("{sectionId}/parallel")]
+        public async Task<IActionResult> GetParallelSection(
+    int sectionId,
+    [FromQuery] string target)
+        {
+            if (string.IsNullOrWhiteSpace(target))
+                return BadRequest("Target act is required (BNS / BNSS)");
+
+            var result = await _sectionService
+                .GetParallelSectionAsync(sectionId, target.ToUpper());
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+
+
+
     }
 }

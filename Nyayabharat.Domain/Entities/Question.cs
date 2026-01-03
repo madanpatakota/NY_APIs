@@ -27,6 +27,7 @@ namespace Nyayabharat.Domain.Entities
         public string QuestionText { get; set; } = string.Empty;
 
         [Required]
+        [Column(TypeName = "nvarchar(50)")]
         public QuestionType QuestionType { get; set; }
 
         [Required]

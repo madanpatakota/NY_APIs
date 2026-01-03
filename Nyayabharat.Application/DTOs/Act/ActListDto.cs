@@ -6,20 +6,12 @@ using System.Threading.Tasks;
 
 namespace Nyayabharat.Application.DTOs.Act
 {
-    public class ActDto
+    public class ActListDto
     {
         public int ActId { get; set; }
         public string ActName { get; set; } = string.Empty;
         public string? ActShortName { get; set; }
-
-        public int EnactedYear { get; set; }
-        public string? Authority { get; set; }
+        public string ActType { get; set; } = string.Empty; // CategoryCode
         public string Status { get; set; } = string.Empty;
-
-        // Act classification (optional but recommended)
-        public string ActType { get; set; } = string.Empty;
-
-        // Chapters under this Act
-        public List<ChapterDto> Chapters { get; set; } = new();
     }
 }

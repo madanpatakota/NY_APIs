@@ -4,9 +4,10 @@ using Nyayabharat.Application.Interfaces.Services;
 
 namespace Nyayabharat.Api.Controllers
 {
+    [AllowAnonymous]
     [ApiController]
     [Route("api/quiz")]
-    [Authorize] // quiz must be authenticated
+    //[Authorize] // quiz must be authenticated
     public class QuizController : ControllerBase
     {
         private readonly IQuizService _quizService;
@@ -25,7 +26,7 @@ namespace Nyayabharat.Api.Controllers
             int situationId,
             string difficulty)
         {
-            var userType = User.FindFirst("UserType")?.Value;
+            var userType = User.FindFirst("UserType")?.Value ?? "Citizen";
 
             if (string.IsNullOrEmpty(userType))
                 return Unauthorized("UserType missing");
@@ -49,7 +50,7 @@ namespace Nyayabharat.Api.Controllers
             int sectionId,
             string difficulty)
         {
-            var userType = User.FindFirst("UserType")?.Value;
+            var userType = User.FindFirst("UserType")?.Value ?? "Citizen";
 
             if (string.IsNullOrEmpty(userType))
                 return Unauthorized("UserType missing");

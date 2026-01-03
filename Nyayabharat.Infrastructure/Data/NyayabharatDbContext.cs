@@ -54,6 +54,7 @@ namespace Nyayabharat.Infrastructure.Data
         public DbSet<SituationGuidance> SituationGuidance { get; set; }
 
 
+        public DbSet<SectionParallel> SectionParallelMap { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -76,6 +77,16 @@ namespace Nyayabharat.Infrastructure.Data
                 .HasKey(x => new { x.SituationId, x.ConceptId });
             modelBuilder.Entity<SituationConcept>()
                 .ToTable("SituationConceptMap");
+
+            modelBuilder.Entity<SectionParallel>()
+    .Property(x => x.NewSectionNumber)
+    .IsRequired(false);
+
+
+            modelBuilder.Entity<Question>()
+       .Property(q => q.QuestionType)
+       .HasConversion<string>();
+
 
             base.OnModelCreating(modelBuilder);
         }

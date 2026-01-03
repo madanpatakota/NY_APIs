@@ -7,6 +7,7 @@ namespace Nyayabharat.Domain.Enums
         Student = 2,
         Aspirant = 3,
         Professional = 4,
-        Admin = 5
+        Admin = 5,
+        Guest = 6
     }
 }
