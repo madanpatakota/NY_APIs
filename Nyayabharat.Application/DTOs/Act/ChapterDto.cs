@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Nyayabharat.Application.DTOs.Act
 {
-    public class ChapterDto
+    public class ChapterDto1
     {
         public int ChapterId { get; set; }
         public string ChapterNumber { get; set; } = string.Empty;

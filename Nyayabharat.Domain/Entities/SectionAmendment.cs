@@ -5,8 +5,10 @@ namespace Nyayabharat.Domain.Entities
     public class SectionAmendment
     {
 
-        [Key]
         public int SectionId { get; set; }
         public int AmendmentId { get; set; }
+
+        public Section Section { get; set; } = null!;
+        public Amendment Amendment { get; set; } = null!;
     }
 }

@@ -17,5 +17,9 @@ namespace Nyayabharat.Application.Interfaces.Repositories
     List<string> fieldNames,
     string languageCode);
 
+
+        Task<List<Translation>> GetByEntityAsync(string entityType, int entityId);
+
+
     }
 }

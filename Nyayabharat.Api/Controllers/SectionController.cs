@@ -112,6 +112,35 @@ namespace Nyayabharat.Api.Controllers
         }
 
 
+        [HttpGet("by-chapter/{chapterId:int}")]
+        public async Task<IActionResult> GetByChapter(int chapterId)
+        {
+            var sections = await _sectionService.GetByChapterIdAsync(chapterId);
+            return Ok(sections);
+        }
+
+
+
+        //[HttpGet("{sectionId:int}")]
+        //public async Task<IActionResult> GetSectionDetail(int sectionId)
+        //{
+        //    var result = await _sectionService.GetSectionDetailAsync(sectionId);
+
+        //    if (result == null)
+        //        return NotFound(new { message = "Section not found" });
+
+        //    return Ok(result);
+        //}
+
+
+        [HttpGet("{sectionId:int}/content")]
+        public async Task<IActionResult> GetSectionContent(int sectionId)
+        {
+            var result = await _sectionService.GetSectionContentAsync(sectionId);
+            return Ok(result);
+        }
+
+
 
     }
 }

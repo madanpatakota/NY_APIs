@@ -21,10 +21,17 @@ namespace Nyayabharat.Infrastructure.Repositories
 
         public override async Task<Act?> GetByIdAsync(int actId)
         {
-            return await _context.Acts
-                .Include(a => a.ActCategory)
-                .Include(a => a.Chapters)
-                .FirstOrDefaultAsync(a => a.ActId == actId);
+            try
+            {
+                return await _context.Acts
+                    .Include(a => a.ActCategory)
+                    .Include(a => a.Chapters)
+                    .FirstOrDefaultAsync(a => a.ActId == actId);
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
         }
     }
 }

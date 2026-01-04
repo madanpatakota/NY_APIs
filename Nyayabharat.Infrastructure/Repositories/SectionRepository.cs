@@ -136,5 +136,45 @@ namespace Nyayabharat.Infrastructure.Repositories
             ).FirstOrDefaultAsync();
         }
 
+
+        public async Task<IEnumerable<Section>> GetByChapterIdAsync(int chapterId)
+        {
+            return await _context.Sections
+                .Where(s => s.ChapterId == chapterId)
+                .OrderBy(s => s.SectionNumber)
+                .ToListAsync();
+        }
+
+
+
+        public async Task<Section?> GetWithDetailsAsync(int sectionId)
+        {
+            return await _context.Sections
+                .Include(s => s.Act)
+                .Include(s => s.Chapter)
+                .Include(s => s.SectionAmendments)
+                    .ThenInclude(sa => sa.Amendment)
+                .Include(s => s.SectionContents)
+                .FirstOrDefaultAsync(s => s.SectionId == sectionId);
+        }
+
+
+        public async Task<IEnumerable<SectionContent>> GetBySectionIdAsync(int sectionId)
+        {
+            return await _context.SectionContents
+                .Where(c => c.SectionId == sectionId)
+                .OrderBy(c => c.ContentType)
+                .ToListAsync();
+        }
+
+
+        public async Task<IEnumerable<SectionContent>> GetContentsBySectionIdAsync(int sectionId)
+        {
+            return await _context.SectionContents
+                .Where(c => c.SectionId == sectionId)
+                .OrderBy(c => c.ContentType)
+                .ToListAsync();
+        }
+
     }
 }

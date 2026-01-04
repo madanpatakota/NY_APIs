@@ -56,6 +56,17 @@ namespace Nyayabharat.Infrastructure.Data
 
         public DbSet<SectionParallel> SectionParallelMap { get; set; } = null!;
 
+        public DbSet<ActCategory> ActCategories { get; set; }
+        //public DbSet<Act> Acts { get; set; }
+
+        //public DbSet<Section> Sections { get; set; }
+        public DbSet<SectionContent> SectionContents { get; set; }
+        //public DbSet<SectionAmendment> SectionAmendments { get; set; }
+        //public DbSet<Chapter> Chapters { get; set; }
+        //public DbSet<Act> Acts { get; set; }
+
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<SectionAmendment>()
@@ -87,6 +98,32 @@ namespace Nyayabharat.Infrastructure.Data
        .Property(q => q.QuestionType)
        .HasConversion<string>();
 
+            modelBuilder.Entity<ActCategory>()
+       .ToTable("ActCategories");
+
+            modelBuilder.Entity<Act>()
+                .HasOne(a => a.ActCategory)
+                .WithMany(c => c.Acts)
+                .HasForeignKey(a => a.ActCategoryId);
+
+            modelBuilder.Entity<Translation>(entity =>
+            {
+                entity.ToTable("Translations");
+
+                entity.Property(e => e.TranslatedText)
+                      .HasColumnName("TranslatedText");
+
+                entity.Property(e => e.FieldName)
+                      .HasColumnName("FieldName");
+            });
+
+            modelBuilder.Entity<Language>(entity =>
+            {
+                entity.ToTable("Languages");
+
+                entity.Property(l => l.IsActive)
+                      .HasColumnName("IsActive");
+            });
 
             base.OnModelCreating(modelBuilder);
         }

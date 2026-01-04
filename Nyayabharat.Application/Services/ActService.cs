@@ -1,4 +1,5 @@
 ﻿using Nyayabharat.Application.DTOs.Act;
+using Nyayabharat.Application.DTOs.Chapter;
 using Nyayabharat.Application.Interfaces.Repositories;
 using Nyayabharat.Application.Interfaces.Services;
 
@@ -58,6 +59,7 @@ namespace Nyayabharat.Application.Services
                 Authority = act.Authority,
                 Status = act.Status,
                 ActType = act.ActCategory?.CategoryCode ?? string.Empty,
+
                 Chapters = act.Chapters.Select(c => new ChapterDto
                 {
                     ChapterId = c.ChapterId,

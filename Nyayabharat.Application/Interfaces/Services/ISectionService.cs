@@ -18,6 +18,11 @@ namespace Nyayabharat.Application.Interfaces.Services
     string targetActShortName
 );
 
+        Task<IEnumerable<SectionDto>> GetByChapterIdAsync(int chapterId);
+
+        Task<SectionDetailDto?> GetSectionDetailAsync(int sectionId);
+
+        Task<IEnumerable<SectionContentDto>> GetSectionContentAsync(int sectionId);
 
 
     }

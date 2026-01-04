@@ -67,5 +67,28 @@ namespace Nyayabharat.Infrastructure.Repositories
         }
 
 
+
+        public async Task<List<Translation>> GetByEntityAsync(string entityType, int entityId)
+        {
+            try
+            {
+                return await _context.Translations
+                    .Include(t => t.Language)
+                    .Where(t =>
+                        t.EntityType == entityType &&
+                        t.EntityId == entityId &&
+                        t.Language.IsActive)
+                    .OrderBy(t => t.FieldName)
+                    .ToListAsync();
+            }
+            catch(Exception ex)
+            {
+                // Log the exception (you can use any logging framework)
+                Console.WriteLine($"An error occurred while fetching translations: {ex.Message}");
+                return new List<Translation>();
+            }
+        }
+
+
     }
 }
