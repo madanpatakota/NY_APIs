@@ -65,7 +65,11 @@ namespace Nyayabharat.Infrastructure.Data
         //public DbSet<Chapter> Chapters { get; set; }
         //public DbSet<Act> Acts { get; set; }
 
-
+        // 🔽 ADD THESE
+        public DbSet<Judgment> Judgments { get; set; }
+        public DbSet<AppealRight> AppealRights { get; set; }
+        public DbSet<UserBookmark> UserBookmarks { get; set; }
+        public DbSet<SectionJudgmentMap> SectionJudgmentMaps { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -124,6 +128,31 @@ namespace Nyayabharat.Infrastructure.Data
                 entity.Property(l => l.IsActive)
                       .HasColumnName("IsActive");
             });
+
+            modelBuilder.Entity<SectionJudgmentMap>()
+       .HasKey(x => new { x.SectionId, x.JudgmentId });
+
+            modelBuilder.Entity<SectionJudgmentMap>()
+                .HasOne(x => x.Judgment)
+                .WithMany()
+                .HasForeignKey(x => x.JudgmentId);
+
+
+            // Section ↔ Judgment (already added)
+            modelBuilder.Entity<SectionJudgmentMap>()
+                .HasKey(x => new { x.SectionId, x.JudgmentId });
+
+            modelBuilder.Entity<SectionJudgmentMap>()
+                .HasOne(x => x.Judgment)
+                .WithMany()
+                .HasForeignKey(x => x.JudgmentId);
+
+            // 🔽 ADD THIS FOR UserBookmark
+            modelBuilder.Entity<UserBookmark>()
+                .HasKey(x => new { x.UserId, x.SectionId });
+
+            modelBuilder.Entity<SectionJudgmentMap>()
+    .ToTable("SectionJudgmentMap");
 
             base.OnModelCreating(modelBuilder);
         }

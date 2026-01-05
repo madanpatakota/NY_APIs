@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nyayabharat.Application.Interfaces.Services;
+using Nyayabharat.Application.Services;
 
 namespace Nyayabharat.Api.Controllers
 {
@@ -11,10 +12,14 @@ namespace Nyayabharat.Api.Controllers
     public class SectionController : ControllerBase
     {
         private readonly ISectionService _sectionService;
+        private readonly ISectionLawService _sectionLawService; // 🔽 ADD
 
-        public SectionController(ISectionService sectionService)
+        public SectionController(
+          ISectionService sectionService,
+          ISectionLawService sectionLawService)   // 🔽 ADD
         {
             _sectionService = sectionService;
+            _sectionLawService = sectionLawService; // 🔽 ADD
         }
 
 
@@ -140,6 +145,26 @@ namespace Nyayabharat.Api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("{id}/judgments")]
+        public async Task<IActionResult> GetJudgments(int id)
+        {
+            return Ok(await _sectionLawService.GetJudgments(id));
+        }
+
+        [HttpGet("{id}/appeal-rights")]
+        public async Task<IActionResult> GetAppealRights(int id)
+        {
+            return Ok(await _sectionLawService.GetAppealRights(id));
+        }
+
+        [Authorize]
+        [HttpPost("{id}/bookmark")]
+        public async Task<IActionResult> Bookmark(int id)
+        {
+            int userId = int.Parse(User.FindFirst("UserId").Value);
+            await _sectionLawService.BookmarkSection(userId, id);
+            return Ok("Bookmarked");
+        }
 
 
     }

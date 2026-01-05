@@ -46,6 +46,11 @@ namespace Nyayabharat.Api.Extensions
 
             services.AddScoped<ISituationGuidanceRepository, SituationGuidanceRepository>();
 
+            services.AddScoped<IJudgmentRepository, JudgmentRepository>();
+            services.AddScoped<IAppealRightRepository, AppealRightRepository>();
+            services.AddScoped<IUserBookmarkRepository, UserBookmarkRepository>();
+            services.AddScoped<ISectionLawService, SectionLawService>();
+
 
             return services;
         }
