@@ -40,7 +40,7 @@ namespace Nyayabharat.Api.Controllers
         [HttpGet("{sectionId}")]
         public async Task<IActionResult> GetDetails(int sectionId)
         {
-            var section = await _sectionService.GetWithDetailsAsync(sectionId);
+            var section = await _sectionService.GetSectionDetailAsync(sectionId);
             if (section == null) return NotFound();
             return Ok(section);
         }

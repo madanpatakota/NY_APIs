@@ -34,5 +34,7 @@
         public bool HasQuiz { get; set; }
 
         public bool HasSituations { get; set; }
+
+        public List<string> Examples { get; set; } = new();
     }
 }

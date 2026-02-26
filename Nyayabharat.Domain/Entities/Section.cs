@@ -14,6 +14,8 @@ namespace Nyayabharat.Domain.Entities
         public string? SectionTitle { get; set; }
         public string? SectionText { get; set; }
 
+        public Explanation? Explanation { get; set; }
+
         // ✅ ADD THIS
         [ForeignKey(nameof(ActId))]
         public Act Act { get; set; } = null!;

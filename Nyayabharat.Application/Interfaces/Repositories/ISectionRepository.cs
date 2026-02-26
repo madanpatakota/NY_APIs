@@ -26,6 +26,7 @@ namespace Nyayabharat.Application.Interfaces.Repositories
         Task<Section?> GetWithDetailsAsync(int sectionId);
 
         Task<IEnumerable<SectionContent>> GetContentsBySectionIdAsync(int sectionId);
+        //Task<IEnumerable<SectionDetailDto>> GetWithDetailsAsync(int sectionId);
 
     }
 }

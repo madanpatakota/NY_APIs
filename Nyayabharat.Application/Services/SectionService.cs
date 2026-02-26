@@ -82,6 +82,12 @@ namespace Nyayabharat.Application.Services
             var simpleExplanation = section.SectionContents
                 .FirstOrDefault(c => c.ContentType == "SimpleExplanation")?.ContentText;
 
+            var examples = section.SectionContents
+    .Where(c => c.ContentType == "Example")
+    .Select(c => c.ContentText!)
+    .ToList();
+
+
             return new SectionDetailDto
             {
                 SectionId = section.SectionId,
@@ -109,7 +115,8 @@ namespace Nyayabharat.Application.Services
                 }).ToList(),
 
                 HasQuiz = true,          // future toggle
-                HasSituations = true     // future toggle
+                HasSituations = true,     // future toggle
+                Examples = examples,   // 👈 ADD THIS
             };
         }
 

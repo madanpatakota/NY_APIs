@@ -83,10 +83,30 @@ namespace Nyayabharat.Infrastructure.Data
             modelBuilder.Entity<ConceptSection>()
                 .ToTable("ConceptSectionMap");
 
+
+
             modelBuilder.Entity<SituationSection>()
-                .HasKey(x => new { x.SituationId, x.SectionId });
+    .HasKey(x => new { x.SituationId, x.SectionId });
+
             modelBuilder.Entity<SituationSection>()
                 .ToTable("SituationSectionMap");
+
+            modelBuilder.Entity<SituationSection>()
+                .HasOne(ss => ss.Section)
+                .WithMany(s => s.SituationSections)
+                .HasForeignKey(ss => ss.SectionId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<SituationSection>()
+                .HasOne(ss => ss.Situation)
+                .WithMany(s => s.SituationSections)
+                .HasForeignKey(ss => ss.SituationId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            //modelBuilder.Entity<SituationSection>()
+            //    .HasKey(x => new { x.SituationId, x.SectionId });
+            //modelBuilder.Entity<SituationSection>()
+            //    .ToTable("SituationSectionMap");
 
             modelBuilder.Entity<SituationConcept>()
                 .HasKey(x => new { x.SituationId, x.ConceptId });
@@ -154,7 +174,21 @@ namespace Nyayabharat.Infrastructure.Data
             modelBuilder.Entity<SectionJudgmentMap>()
     .ToTable("SectionJudgmentMap");
 
+//            modelBuilder.Entity<Section>()
+//.HasOne(s => s.Explanation)
+//.WithOne()
+//.HasForeignKey<Explanation>(e => e.SectionId);
+
+            modelBuilder.Entity<Section>()
+       .HasOne(s => s.Explanation)
+       .WithOne(e => e.Section)
+       .HasForeignKey<Explanation>(e => e.SectionId)
+       .OnDelete(DeleteBehavior.Cascade);
+
+
             base.OnModelCreating(modelBuilder);
+
+
         }
     }
 }
