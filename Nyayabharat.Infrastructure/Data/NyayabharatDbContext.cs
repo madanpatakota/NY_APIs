@@ -86,7 +86,7 @@ namespace Nyayabharat.Infrastructure.Data
 
 
             modelBuilder.Entity<SituationSection>()
-    .HasKey(x => new { x.SituationId, x.SectionId });
+    .HasKey(x => new { x.SituationId, x.SectionNumber });
 
             modelBuilder.Entity<SituationSection>()
                 .ToTable("SituationSectionMap");
@@ -94,7 +94,7 @@ namespace Nyayabharat.Infrastructure.Data
             modelBuilder.Entity<SituationSection>()
                 .HasOne(ss => ss.Section)
                 .WithMany(s => s.SituationSections)
-                .HasForeignKey(ss => ss.SectionId)
+                .HasForeignKey(ss => ss.SectionNumber)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<SituationSection>()

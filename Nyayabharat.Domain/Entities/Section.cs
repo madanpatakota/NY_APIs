@@ -7,7 +7,7 @@ namespace Nyayabharat.Domain.Entities
     {
 
         [Key]
-        public int SectionId { get; set; }
+        public int Id { get; set; }
         public int ActId { get; set; }
         public int? ChapterId { get; set; }
         public string SectionNumber { get; set; } = string.Empty;

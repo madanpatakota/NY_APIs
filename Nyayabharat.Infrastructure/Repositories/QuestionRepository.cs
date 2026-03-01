@@ -48,7 +48,7 @@ namespace Nyayabharat.Infrastructure.Repositories
                     .Where(q =>
                         _context.SituationSections   // ✅ FIX IS HERE
                             .Any(ss =>
-                                ss.SectionId == sectionId &&
+                                ss.SectionNumber == sectionId &&
                                 ss.SituationId == q.SituationId
                             ) &&
                         q.Difficulty == difficulty &&

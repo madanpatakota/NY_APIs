@@ -60,7 +60,7 @@ namespace Nyayabharat.Application.Services
 
             return sections.Select(s => new SectionDto
             {
-                SectionId = s.SectionId,
+                SectionId = s.Id,
                 SectionNumber = s.SectionNumber,
                 SectionTitle = s.SectionTitle,
                 ActId = s.ActId,
@@ -90,7 +90,7 @@ namespace Nyayabharat.Application.Services
 
             return new SectionDetailDto
             {
-                SectionId = section.SectionId,
+                SectionId = section.Id,
                 SectionNumber = section.SectionNumber,
                 SectionTitle = section.SectionTitle,
                 SectionText = section.SectionText,
