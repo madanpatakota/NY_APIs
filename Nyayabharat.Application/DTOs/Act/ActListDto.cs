@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Nyayabharat.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,5 +14,7 @@ namespace Nyayabharat.Application.DTOs.Act
         public string? ActShortName { get; set; }
         public string ActType { get; set; } = string.Empty; // CategoryCode
         public string Status { get; set; } = string.Empty;
+
+        public string CategoryName  { get; set; } = string.Empty;
     }
 }

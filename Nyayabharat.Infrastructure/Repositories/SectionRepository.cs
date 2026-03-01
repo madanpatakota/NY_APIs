@@ -25,7 +25,7 @@ namespace Nyayabharat.Infrastructure.Repositories
             return await _context.Sections
                 .Include(s => s.SubSections)
                 .ThenInclude(ss => ss.Clauses)
-                .FirstOrDefaultAsync(s => s.Id == sectionId);
+                .FirstOrDefaultAsync(s => s.SectionId == sectionId);
         }
 
         //public async Task<IEnumerable<Section>> GetBySituationIdAsync(int situationId)
@@ -53,7 +53,7 @@ namespace Nyayabharat.Infrastructure.Repositories
                 .Where(x => x.SituationId == situationId)
                 .Select(x => new SituationSectionDto
                 {
-                    SectionId = x.Section.Id,
+                    SectionId = x.Section.SectionId,
                     SectionNumber = x.Section.SectionNumber,
                     SectionTitle = x.Section.SectionTitle,
                     ActShortName = x.Section.Act.ActShortName
@@ -81,7 +81,7 @@ namespace Nyayabharat.Infrastructure.Repositories
 
             return await (
                 from pm in _context.SectionParallelMap
-                join ipc in _context.Sections on pm.OldSectionId equals ipc.Id
+                join ipc in _context.Sections on pm.OldSectionId equals ipc.SectionId
                 join bns in _context.Sections
                     on pm.NewSectionNumber equals bns.SectionNumber into bnsJoin
                 from bns in bnsJoin.DefaultIfEmpty()
@@ -89,10 +89,10 @@ namespace Nyayabharat.Infrastructure.Repositories
                       && pm.NewActId == bnsActId
                 select new SectionParallelDto
                 {
-                    IpcSectionId = ipc.Id,
+                    IpcSectionId = ipc.SectionId,
                     IpcSectionNumber = ipc.SectionNumber,
                     MappingType = pm.MappingType,
-                    BnsSectionId = bns != null ? bns.Id : null,
+                    BnsSectionId = bns != null ? bns.SectionId : null,
                     BnsSectionNumber = pm.NewSectionNumber,
                     BnsSectionTitle = bns != null ? bns.SectionTitle : null,
                     Notes = pm.Notes
@@ -114,7 +114,7 @@ namespace Nyayabharat.Infrastructure.Repositories
             return await (
                 from pm in _context.SectionParallelMap
                 join src in _context.Sections
-                    on pm.OldSectionId equals src.Id
+                    on pm.OldSectionId equals src.SectionId
                 join tgt in _context.Sections
                     on pm.NewSectionNumber equals tgt.SectionNumber
                     into tgtJoin
@@ -123,10 +123,10 @@ namespace Nyayabharat.Infrastructure.Repositories
                       && pm.NewActId == targetActId
                 select new SectionParallelDto
                 {
-                    IpcSectionId = src.Id,
+                    IpcSectionId = src.SectionId,
                     IpcSectionNumber = src.SectionNumber,
 
-                    BnsSectionId = tgt != null ? tgt.Id : null,
+                    BnsSectionId = tgt != null ? tgt.SectionId : null,
                     BnsSectionNumber = pm.NewSectionNumber,
                     BnsSectionTitle = tgt != null ? tgt.SectionTitle : null,
 
@@ -139,10 +139,17 @@ namespace Nyayabharat.Infrastructure.Repositories
 
         public async Task<IEnumerable<Section>> GetByChapterIdAsync(int chapterId)
         {
-            return await _context.Sections
-                .Where(s => s.ChapterId == chapterId)
-                .OrderBy(s => s.SectionNumber)
-                .ToListAsync();
+            try
+            {
+                return await _context.Sections
+                    .Where(s => s.ChapterId == chapterId)
+                    .OrderBy(s => s.SectionNumber)
+                    .ToListAsync();
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
         }
 
 
@@ -155,7 +162,7 @@ namespace Nyayabharat.Infrastructure.Repositories
                 .Include(s => s.SectionAmendments)
                     .ThenInclude(sa => sa.Amendment)
                 .Include(s => s.SectionContents)
-                .FirstOrDefaultAsync(s => s.Id == sectionId);
+                .FirstOrDefaultAsync(s => s.SectionId == sectionId);
         }
 
 

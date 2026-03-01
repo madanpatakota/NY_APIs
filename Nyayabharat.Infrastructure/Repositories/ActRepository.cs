@@ -33,5 +33,18 @@ namespace Nyayabharat.Infrastructure.Repositories
                 throw;
             }
         }
+
+
+        //public async Task<List<Act>> GetAllActsAsync()
+        //{
+           
+        //}
+
+       public async  Task<List<Act>> GetAllActsAsync()
+        {
+            return await _context.Acts
+               .Include(a => a.ActCategory)   // 🔥 IMPORTANT
+               .ToListAsync();
+        }
     }
 }

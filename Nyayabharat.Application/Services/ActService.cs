@@ -17,7 +17,7 @@ namespace Nyayabharat.Application.Services
         // ✅ LIST ALL ACTS
         public async Task<List<ActListDto>> GetAllActsAsync()
         {
-            var acts = await _actRepository.GetAllAsync();
+            var acts = await _actRepository.GetAllActsAsync();
 
             return acts.Select(act => new ActListDto
             {
@@ -25,7 +25,8 @@ namespace Nyayabharat.Application.Services
                 ActName = act.ActName,
                 ActShortName = act.ActShortName,
                 ActType = act.ActCategory?.CategoryCode ?? string.Empty,
-                Status = act.Status
+                Status = act.Status,
+                CategoryName = act.ActCategory?.CategoryName ?? string.Empty              
             }).ToList();
         }
 
