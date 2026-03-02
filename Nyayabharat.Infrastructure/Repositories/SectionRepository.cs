@@ -66,7 +66,7 @@ namespace Nyayabharat.Infrastructure.Repositories
         public async Task<List<Situation>> GetSituationsBySectionIdAsync(int sectionId)
         {
             return await _context.SituationSections
-                .Where(x => x.SectionNumber == sectionId)
+                .Where(x => x.SectionId == sectionId)
                 .Select(x => x.Situation)
                 .ToListAsync();
         }

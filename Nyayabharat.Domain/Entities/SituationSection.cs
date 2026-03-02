@@ -8,7 +8,7 @@ namespace Nyayabharat.Domain.Entities
         public int SituationId { get; set; }
         public Situation Situation { get; set; } = null!;
 
-        public int SectionNumber { get; set; }
+        public int SectionId { get; set; }
         public Section Section { get; set; } = null!;
     }
     //public class SituationSection

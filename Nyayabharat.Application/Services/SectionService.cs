@@ -64,7 +64,8 @@ namespace Nyayabharat.Application.Services
                 SectionNumber = s.SectionNumber,
                 SectionTitle = s.SectionTitle,
                 ActId = s.ActId,
-                ChapterId = s.ChapterId
+                ChapterId = s.ChapterId,
+                DisplayTitle = s.DisplayTitle
             });
         }
 

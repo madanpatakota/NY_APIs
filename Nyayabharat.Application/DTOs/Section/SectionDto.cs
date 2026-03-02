@@ -11,5 +11,7 @@
         public int ActId { get; set; }
 
         public int? ChapterId { get; set; }
+
+        public string? DisplayTitle { get; set; }
     }
 }
