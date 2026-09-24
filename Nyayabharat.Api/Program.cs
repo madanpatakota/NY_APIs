@@ -1,6 +1,7 @@
 using Nyayabharat.Api.Extensions;
 using Nyayabharat.Api.Filters;
 using Nyayabharat.Api.Middlewares;
+using Nyayabharat.Infrastructure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +32,9 @@ builder.Services
     //.AddAuthorizationPolicies();
 
 builder.Services.AddCorsPolicy();
+
+// Microsoft Entra ID Authentication
+builder.Services.AddAzureAdAuthentication(builder.Configuration);
 //builder.Services.AddJwtAuthentication(builder.Configuration);
 
 //builder.Services.AddControllers()
@@ -40,7 +44,7 @@ builder.Services.AddCorsPolicy();
 //            System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 //    });
 
-
+builder.Services.AddScoped<EntraTokenService>();
 var app = builder.Build();
 
 //if (app.Environment.IsDevelopment())
