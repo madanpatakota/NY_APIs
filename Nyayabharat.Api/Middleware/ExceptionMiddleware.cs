@@ -10,7 +10,9 @@ namespace Nyayabharat.Api.Middlewares
         private readonly RequestDelegate _next;
         private readonly ILogger<ExceptionMiddleware> _logger;
 
-        public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
+        public ExceptionMiddleware(
+            RequestDelegate next,
+            ILogger<ExceptionMiddleware> logger)
         {
             _next = next;
             _logger = logger;
@@ -24,13 +26,29 @@ namespace Nyayabharat.Api.Middlewares
             }
             catch (AppException ex)
             {
-                _logger.LogError(ex, ex.Message);
-                await WriteError(context, HttpStatusCode.BadRequest, ex.Message);
+                _logger.LogWarning(
+                    ex,
+                    "Application error for {Method} {Path}",
+                    context.Request.Method,
+                    context.Request.Path);
+
+                await WriteError(
+                    context,
+                    HttpStatusCode.BadRequest,
+                    ex.Message);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
-                await WriteError(context, HttpStatusCode.InternalServerError, "Internal server error");
+                _logger.LogError(
+                    ex,
+                    "Unhandled error for {Method} {Path}",
+                    context.Request.Method,
+                    context.Request.Path);
+
+                await WriteError(
+                    context,
+                    HttpStatusCode.InternalServerError,
+                    "An unexpected error occurred.");
             }
         }
 
@@ -39,6 +57,15 @@ namespace Nyayabharat.Api.Middlewares
             HttpStatusCode statusCode,
             string message)
         {
+            if (context.Response.HasStarted)
+            {
+                return;
+            }
+
+            context.Response.Clear();
+            context.Response.StatusCode = (int)statusCode;
+            context.Response.ContentType = "application/json";
+
             var response = new ApiResponse<object>
             {
                 Success = false,
@@ -48,9 +75,8 @@ namespace Nyayabharat.Api.Middlewares
                 Errors = null
             };
 
-            context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)statusCode;
-            await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+            await context.Response.WriteAsync(
+                JsonSerializer.Serialize(response));
         }
     }
 }
