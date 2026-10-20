@@ -3,6 +3,7 @@ using Nyayabharat.Api.Filters;
 using Nyayabharat.Api.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.AddAzureWebAppDiagnostics();
 
 //builder.Services.AddControllers();
 
