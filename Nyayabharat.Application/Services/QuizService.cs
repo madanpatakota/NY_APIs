@@ -1,4 +1,5 @@
 ﻿using Nyayabharat.Application.DTOs.Quiz;
+using Nyayabharat.Application.Helpers;
 using Nyayabharat.Application.Interfaces.Repositories;
 using Nyayabharat.Application.Interfaces.Services;
 using Nyayabharat.Domain.Entities;
@@ -11,15 +12,21 @@ namespace Nyayabharat.Application.Services
         private readonly IQuestionRepository _questionRepository;
         private readonly IQuizAttemptRepository _attemptRepository;
         private readonly IQuizAttemptAnswerRepository _answerRepository;
+        private readonly TimeProvider _timeProvider;
+        private readonly QuizScoreCalculator _scoreCalculator;
 
         public QuizService(
             IQuestionRepository questionRepository,
             IQuizAttemptRepository attemptRepository,
-            IQuizAttemptAnswerRepository answerRepository)
+            IQuizAttemptAnswerRepository answerRepository,
+            TimeProvider timeProvider,
+            QuizScoreCalculator scoreCalculator)
         {
             _questionRepository = questionRepository;
             _attemptRepository = attemptRepository;
             _answerRepository = answerRepository;
+            _timeProvider = timeProvider;
+            _scoreCalculator = scoreCalculator;
         }
 
         // ================================
@@ -42,7 +49,7 @@ namespace Nyayabharat.Application.Services
             var attempt = new QuizAttempt
             {
                 UserId = 0, // anonymous (login later)
-                StartedOn = DateTime.UtcNow,
+                StartedOn = _timeProvider.GetUtcNow().UtcDateTime,
                 Difficulty = difficulty,
                 TotalQuestions = list.Count
             };
@@ -88,7 +95,7 @@ namespace Nyayabharat.Application.Services
             var attempt = new QuizAttempt
             {
                 UserId = null, // anonymous
-                StartedOn = DateTime.UtcNow,
+                StartedOn = _timeProvider.GetUtcNow().UtcDateTime,
                 Difficulty = difficulty,
                 TotalQuestions = questions.Count
             };
@@ -179,10 +186,10 @@ namespace Nyayabharat.Application.Services
             if (attempt == null)
                 throw new Exception("Quiz attempt not found");
 
-            attempt.CompletedOn = DateTime.UtcNow;
+            attempt.CompletedOn = _timeProvider.GetUtcNow().UtcDateTime;
             attempt.TotalQuestions = totalQuestions;
             attempt.CorrectAnswers = correctAnswers;
-            attempt.Score = (correctAnswers * 100) / totalQuestions;
+            attempt.Score = _scoreCalculator.CalculateScore(correctAnswers, totalQuestions);
 
             await _attemptRepository.UpdateAttemptAsync(attempt);
 

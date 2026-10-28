@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Nyayabharat.Application.Helpers;
 using Nyayabharat.Application.Interfaces.Repositories;
 using Nyayabharat.Application.Interfaces.Services;
 using Nyayabharat.Application.Services;
@@ -17,6 +18,9 @@ namespace Nyayabharat.Api.Extensions
         {
             services.AddDbContext<NyayabharatDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddSingleton(TimeProvider.System);
+            services.AddTransient<QuizScoreCalculator>();
 
             services.AddScoped<IActRepository, ActRepository>();
             services.AddScoped<ISectionRepository, SectionRepository>();
@@ -56,3 +60,4 @@ namespace Nyayabharat.Api.Extensions
         }
     }
 }
+
